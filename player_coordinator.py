@@ -71,3 +71,6 @@ class PlayerCoordinator:
 if __name__ == '__main__':
     coordinator = PlayerCoordinator()
     coordinator.run()
+
+
+    
