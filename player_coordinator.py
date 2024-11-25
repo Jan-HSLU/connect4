@@ -47,7 +47,7 @@ class PlayerCoordinator:
                 self._player_yellow.draw_board(board, state)
 
                 # 4. Spieler der am Zug ist, auffordern, seinen nächsten Zug zu bestimmen
-                column_to_drop = self._player_yellow.play_turn()
+                column_to_drop = self._player_yellow.play_turn(state)
 
                 # 5. Den Zug an die Logik weiterreichen
                 self._game_logic.drop_token(GameToken.YELLOW, column_to_drop)
