@@ -18,7 +18,7 @@ class PlayerSenseHat(PlayerBase):
         self._display.draw_cursor(self._current_column)
         self._display.draw_grid()
 
-    def play_turn(self) -> int:
+    def play_turn(self, state: GameState) -> int:
         while True:
             while not self._input.key_pressed():
                 sleep(0.1)
@@ -37,7 +37,7 @@ class PlayerSenseHat(PlayerBase):
             #ACHTNG DAS MUSS DA WAHRSCHEINLICH DANN WEG?!    
             # Aktualisierten Cursor zeichnen
             self._display.draw_cursor(self._current_column)
-            self._display.draw_grid()
+            self._display.draw_grid(state)
 
     def draw_board(self, board: list, state: GameState):
         """

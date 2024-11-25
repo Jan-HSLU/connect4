@@ -1,6 +1,7 @@
 from game_token import GameToken
 from display_base import DisplayBase
 from sense_hat import SenseHat
+from game_state import GameState
 from time import sleep
 
 TOKEN_COLORS = {
@@ -19,13 +20,17 @@ class DisplaySenseHat(DisplayBase):
         self.board = [[GameToken.EMPTY for _ in range(self.columns)] for _ in range(self.rows)]
         self.cursor_x = None  # Aktuelle Cursorposition
 
-    def draw_grid(self):
+    def draw_grid(self, state):
         pixels = []
         for y in range(8):
             for x in range(8):
                 if y == 0 and x == self.cursor_x:
-                    # Cursor in der obersten Zeile anzeigen
-                    pixels.append(TOKEN_COLORS["CURSOR"])
+                    if state == GameState.TURN_RED:
+                        pixels.append(TOKEN_COLORS["CURSOR_RED"])
+                    elif state == GameState.TURN_YELLOW:
+                        pixels.append(TOKEN_COLORS["CURSOR_YELLOW"])
+                    else:
+                        pixels.append(TOKEN_COLORS["CURSOR"])
                 elif 1 <= y <= self.rows and x < self.columns:
                     token = self.board[y - 1][x]
                     pixels.append(TOKEN_COLORS[token])
