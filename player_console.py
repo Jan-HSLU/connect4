@@ -15,7 +15,7 @@ class PlayerConsole(PlayerBase):
         self._display = DisplayConsole()
         self._input = InputConsole()
 
-    def play_turn(self) -> int:
+    def play_turn(self, state: GameState) -> int:
         columns = 7
         current_column = 3
 

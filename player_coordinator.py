@@ -9,7 +9,7 @@ class PlayerCoordinator:
     def __init__(self):
 
         # Initialisiere Spieler (PlayerSimple/PlayerConsole/PlayerSenseHat)
-        self._player_red = PlayerSimple(GameToken.RED)  # X
+        self._player_red = PlayerConsole(GameToken.RED)  # X
         self._player_yellow = PlayerConsole(GameToken.YELLOW)  # 0
 
         # Initialisiere GameLogic
@@ -34,7 +34,7 @@ class PlayerCoordinator:
                 self._player_red.draw_board(board, state)
 
                 # 4. Spieler der am Zug ist, auffordern, seinen nächsten Zug zu bestimmen
-                column_to_drop = self._player_red.play_turn()
+                column_to_drop = self._player_red.play_turn(state)
 
                 # 5. Den Zug an die Logik weiterreichen
                 self._game_logic.drop_token(GameToken.RED, column_to_drop)
