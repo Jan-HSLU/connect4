@@ -1,48 +1,97 @@
+from game_logic import GameLogicBase
+from game_state import GameState
+from drop_state import DropState
+from game_token import GameToken
 import requests
 
-class GameLogicClient:
-    def __init__(self, base_url):
-        """
-        Initialisiert den Client mit der Basis-URL des Flask-Servers.
-        :param base_url: Basis-URL des Flask-Servers, z.B. "http://127.0.0.1:5000"
-        """
-        self.base_url = base_url
+class GameLogicClient(GameLogicBase):
 
-    def get_board(self):
-        """
-        Holt das aktuelle Spielfeld.
-        :return: 2D-Liste, die das Spielfeld darstellt.
-        """
-        response = requests.get(f"{self.base_url}/board")
-        response.raise_for_status()
-        return response.json()["board"]
+    def __init__(self, host):
+        super().__init__()
+        print( f"GameLogicClient initialized with host {host}" )
+        self._url = f'http://{host}:5000/api'
 
-    def get_state(self):
-        """
-        Holt den aktuellen Spielzustand.
-        :return: Spielzustand als String (z. B. "TURN_RED", "WON_YELLOW").
-        """
-        response = requests.get(f"{self.base_url}/state")
-        response.raise_for_status()
-        return response.json()["state"]
+    def get_board(self) -> list:
+        # call remote API
+        response = requests.get(f"{self._url}/board")
+        # return result to locall caller
+        return response.json().get("board")
 
-    def drop_token(self, player, column):
-        """
-        Setzt einen Token in die angegebene Spalte.
-        :param player: Spieler, entweder "RED" oder "YELLOW".
-        :param column: Spalte (0-6), in die der Token gesetzt werden soll.
-        :return: Ergebnis des Zuges und das aktuelle Spielfeld.
-        """
-        payload = {"player": player, "column": column}
-        response = requests.post(f"{self.base_url}/drop", json=payload)
-        response.raise_for_status()
-        return response.json()
+    def get_state(self) -> GameState:
+        
+        response = requests.get(f"{self._url}/state")
+        game_state = response.json().get("game_state")
 
-    def reset_game(self):
-        """
-        Setzt das Spiel zurück.
-        :return: Nachricht und das leere Spielfeld.
-        """
-        response = requests.post(f"{self.base_url}/reset")
-        response.raise_for_status()
-        return response.json()
+        if game_state == 0:
+            return GameState.TURN_RED
+        elif game_state == 1:
+            return GameState.TURN_YELLOW
+        elif game_state == 2:
+            return GameState.WON_RED
+        elif game_state == 3:
+            return GameState.WON_YELLOW
+        elif game_state == 4:
+            return GameState.DRAW
+        else:
+            print("ERROR GAMESTATE API")
+
+
+    def drop_token(self, player, column) -> DropState:
+        # IMPLEMENT METHOD HERE
+
+        if player == GameToken.RED:
+            player_id = "X"
+        else:
+            player_id = "O"
+
+        payload = {
+            "column": column,
+             "player_id": player_id
+        }
+        response = requests.post(f"{self._url}/drop", json=payload)
+
+        drop_state = response.json().get("drop_state")
+
+        if drop_state == 0:
+            return DropState.DROP_OK
+        elif drop_state == 1:
+            return DropState.COLUMN_INVALID
+        elif drop_state == 2:
+            return DropState.COLUMN_FULL
+        elif drop_state == 3:
+            return DropState.WRONG_PLAYER
+        else:
+            print("ERROR DROPSTATE API")
+
+
+if __name__ == '__main__':
+    """
+    Test programm to manually check if GameLogicClient is working.
+    Limitations:
+    - Implements both players at once--no distributed gameplay possible
+    - Does not handle errors
+    - Does not handle end of game gracefully
+    """
+    # local function
+    def draw_board( board: list, state: GameState) -> None:
+        print("0|1|2|3|4|5|6")
+        for row in board:
+            print('|'.join(row))
+        print( f"GameState: {state}" )
+
+    client = GameLogicClient("127.0.0.1")
+    while( True ):
+        game_state = client.get_state()
+        board = client.get_board()
+        print(board)
+
+        draw_board( board, game_state )
+
+        if game_state == GameState.TURN_RED or  game_state == GameState.TURN_YELLOW:
+            player = GameToken.RED if game_state == GameState.TURN_RED else GameToken.YELLOW  
+            column = int(input("Which colum to drop? "))    
+            drop_state = client.drop_token( player, column )
+            print( "drop_state:", drop_state )
+        else: break # bail out if its neither RED's nor YELLOW's turn, i.e. WON or DRAW
+    
+    print("Game Over")

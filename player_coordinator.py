@@ -4,7 +4,7 @@ from player_simple import PlayerSimple
 from player_console import PlayerConsole
 from game_token import GameToken
 from game_state import GameState
-#git pull orgin main
+
 
 class PlayerCoordinator:
     def __init__(self):
@@ -14,7 +14,7 @@ class PlayerCoordinator:
         self._player_yellow = PlayerConsole(GameToken.YELLOW)  # 0
 
         # Initialisiere GameLogic
-        self._game_logic = GameLogicClient("http://localhost:5000")
+        self._game_logic = GameLogicClient("127.0.0.1")
 
 
     def run(self):
@@ -24,14 +24,14 @@ class PlayerCoordinator:
 
             # 1. Spiel-Zustand abfragen -> get_state() -> GameLogic -> Return GameState
             state = self._game_logic.get_state()
-            print(state)
+
 
             # 2. Spielfeld abfragen -> get_board() -> GameLogic -> Return Board as list
             board = self._game_logic.get_board()
-            print(board)
+
 
             # Wenn Spieler Rot am Zug:
-            if state == "TURN_RED":
+            if state == GameState.TURN_RED:
 
                 # 3. Spieler, der am Zug ist, auffordern, das Spielfeld neu zu zeichnen
                 self._player_red.draw_board(board, state)
@@ -44,7 +44,7 @@ class PlayerCoordinator:
 
 
             # Wenn Spieler Gelb am Zug:
-            elif state == "TURN_YELLOW":
+            elif state == GameState.TURN_YELLOW:
 
                 # 3. Spieler, der am Zug ist, auffordern, das Spielfeld neu zu zeichnen
                 self._player_yellow.draw_board(board, state)
