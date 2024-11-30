@@ -61,11 +61,13 @@ if __name__ == "__main__":
                                     type: string
                                     description: A token in the game, represented by one of 'X', 'O', ' '
         """
-        # working implementation for GET /api/board
-        # get the board from the local GameLogic object
+
+        # ruft Board aus lokaler GameLogic auf
         board = game.get_board()
-        # return board to the caller via JSON response
-        return jsonify( {"board": board} ), 200 # status code: 200 Ok
+
+        # gibt Board als JSON dem Caller zurück
+        return jsonify( {"board": board} ), 200 # Status Code: 200 Ok
+
 
     @app.route('/api/state', methods=['GET'])
     def get_state():
@@ -98,10 +100,13 @@ if __name__ == "__main__":
                             description: The current state of the game, represented as integer number [0..4]
                             example: 1
         """
-        # IMPLEMENT GET /api/state HERE
+
+        # ruft den GameState aus lokaler GameLogic auf 
         state = game.get_state()
         
-        return jsonify({"game_state": state.value}), 200 # status code: 200 Ok
+        # gibt GameState als JSON Number dem Caller zurück
+        return jsonify({"game_state": state.value}), 200 # Status Code: 200 Ok
+
 
     @app.route('/api/drop', methods=['POST'])
     def drop_token():
@@ -166,26 +171,30 @@ if __name__ == "__main__":
                             description: Textual desription of the error.
                             example: Fields 'player_id' and/or 'column' missing in request body.
         """
-        # IMPLEMENT POST /api/drop HERE!
+        
         data = request.json
 
-        # Check if the JSON body exists
+        # Fehlerprüfung API Call, ob JSON Body vorhanden ist
         if not data:
-            return jsonify({"Error": "Fields 'player_id' and/or 'column' missing in request body."}), 400 # status code: 400 Error
+            return jsonify({"Error": "Fields 'player_id' and/or 'column' missing in request body."}), 400 # Status Code: 400 Error
 
-        # Check for missing fields
+        # Fehlerprüfung API Call, ob alle Felder vorhanden sind
         if 'player_id' not in data or 'column' not in data:
-            return jsonify({"Error": "Fields 'player_id' and/or 'column' missing in request body."}), 400 # status code: 400 Error
+            return jsonify({"Error": "Fields 'player_id' and/or 'column' missing in request body."}), 400 # Status Code: 400 Error
         
+        # Umwandlung JSON String zu GameToken-Enum
         player = GameToken.RED if data['player_id'] == 'X' else GameToken.YELLOW
+
         column = data['column']
 
+        # ruft den DropState aus lokaler GameLogic auf 
         drop_state = game.drop_token(player, column)
 
-        return jsonify({"drop_state": drop_state.value}), 200 # status code: 200 Ok
+        #gibt DropState als JSON Number dem Caller zurück
+        return jsonify({"drop_state": drop_state.value}), 200 # Status Code: 200 Ok
     
     
-    # starting the server on all interfaces
+    # Server-Start
     print("Game server start")
     app.run(host="0.0.0.0", debug=True)
     print("Game server exit")

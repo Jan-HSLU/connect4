@@ -12,16 +12,22 @@ class GameLogicClient(GameLogicBase):
         self._url = f'http://{host}:5000/api'
 
     def get_board(self) -> list:
-        # call remote API
+
+        # API Call GET /Board
         response = requests.get(f"{self._url}/board")
-        # return result to locall caller
+
+        # Resultat Board als List -> Return
         return response.json().get("board")
 
     def get_state(self) -> GameState:
         
+        # API Call GET /State
         response = requests.get(f"{self._url}/state")
+
+        # Resultat GameState als JSON Number
         game_state = response.json().get("game_state")
 
+        # Umwandlung JSON Number zu GameState-Enum & Return
         if game_state == 0:
             return GameState.TURN_RED
         elif game_state == 1:
@@ -37,21 +43,26 @@ class GameLogicClient(GameLogicBase):
 
 
     def drop_token(self, player, column) -> DropState:
-        # IMPLEMENT METHOD HERE
-
+        
+        # Umwandlung GameToken-Enum zu JSON String
         if player == GameToken.RED:
             player_id = "X"
         else:
             player_id = "O"
 
+        # Payload für API Call
         payload = {
             "column": column,
              "player_id": player_id
         }
+
+        # API Call POST /Drop
         response = requests.post(f"{self._url}/drop", json=payload)
 
+        # Resultat DropState als JSON Number
         drop_state = response.json().get("drop_state")
 
+        # Umwandlung JSON Number zu DropState-Enum & Return
         if drop_state == 0:
             return DropState.DROP_OK
         elif drop_state == 1:
