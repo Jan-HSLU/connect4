@@ -87,3 +87,21 @@ class GameLogic(GameLogicBase):
             
         # Wenn die Spalte voll ist melden. Zug wird in der Schleife wiederholt     
         return DropState.COLUMN_FULL
+    
+
+
+"""
+    def drop_token(self, player: GameToken, column: int):
+        if column < 0 or column >= len(self._board[0]):
+            return DropState.COLUMN_INVALID, -1
+
+        # Prüfen, ob die Spalte voll ist
+        if self._board[0][column] != GameToken.EMPTY:
+            return DropState.COLUMN_FULL, -1
+
+        # Finde die niedrigste leere Zeile in der Spalte
+        for row in reversed(range(len(self._board))):
+            if self._board[row][column] == GameToken.EMPTY:
+                self._board[row][column] = player
+                return DropState.DROP_OK, row  # Zeile zurückgeben
+        return DropState.COLUMN_FULL, -1"""

@@ -4,13 +4,19 @@ from player_simple import PlayerSimple
 from player_console import PlayerConsole
 from game_token import GameToken
 from game_state import GameState
+<<<<<<< HEAD
 
+=======
+from ansi import Ansi
+from drop_state import DropState
+#git pull orgin main
+>>>>>>> 80eeb8e1f5718ad0a44990718472a1024fb85858
 
 class PlayerCoordinator:
     def __init__(self):
 
         # Initialisiere Spieler (PlayerSimple/PlayerConsole/PlayerSenseHat)
-        self._player_red = PlayerSimple(GameToken.RED)  # X
+        self._player_red = PlayerConsole(GameToken.RED)  # X
         self._player_yellow = PlayerConsole(GameToken.YELLOW)  # 0
 
         # Initialisiere GameLogic
@@ -24,8 +30,12 @@ class PlayerCoordinator:
 
             # 1. Spiel-Zustand abfragen -> get_state() -> GameLogic -> Return GameState
             state = self._game_logic.get_state()
+<<<<<<< HEAD
 
 
+=======
+            Ansi.gotoXY(1, 2)
+>>>>>>> 80eeb8e1f5718ad0a44990718472a1024fb85858
             # 2. Spielfeld abfragen -> get_board() -> GameLogic -> Return Board as list
             board = self._game_logic.get_board()
 
@@ -37,10 +47,12 @@ class PlayerCoordinator:
                 self._player_red.draw_board(board, state)
 
                 # 4. Spieler der am Zug ist, auffordern, seinen nächsten Zug zu bestimmen
-                column_to_drop = self._player_red.play_turn()
+                column_to_drop = self._player_red.play_turn(state)
 
                 # 5. Den Zug an die Logik weiterreichen
                 self._game_logic.drop_token(GameToken.RED, column_to_drop)
+                if DropState == 2:
+                    print("Die Spalte ist voll, wähle eine Andere.")
 
 
             # Wenn Spieler Gelb am Zug:
