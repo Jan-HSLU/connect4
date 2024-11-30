@@ -37,7 +37,7 @@ class PlayerSimple(PlayerBase):
 
         return #Zeichne das Board in der Konsole
     
-    #blablbalbla
+
     
 
 if __name__ == '__main__':

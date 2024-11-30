@@ -1,9 +1,10 @@
 from game_logic import GameLogic
+from game_logic_client import GameLogicClient
 from player_simple import PlayerSimple
 from player_console import PlayerConsole
 from game_token import GameToken
 from game_state import GameState
-#git pull orgin main
+
 
 class PlayerCoordinator:
     def __init__(self):
@@ -13,7 +14,7 @@ class PlayerCoordinator:
         self._player_yellow = PlayerConsole(GameToken.YELLOW)  # 0
 
         # Initialisiere GameLogic
-        self._game_logic = GameLogic()
+        self._game_logic = GameLogicClient("127.0.0.1")
 
 
     def run(self):
@@ -24,8 +25,10 @@ class PlayerCoordinator:
             # 1. Spiel-Zustand abfragen -> get_state() -> GameLogic -> Return GameState
             state = self._game_logic.get_state()
 
+
             # 2. Spielfeld abfragen -> get_board() -> GameLogic -> Return Board as list
             board = self._game_logic.get_board()
+
 
             # Wenn Spieler Rot am Zug:
             if state == GameState.TURN_RED:
