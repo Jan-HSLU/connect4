@@ -4,13 +4,6 @@ from player_simple import PlayerSimple
 from player_console import PlayerConsole
 from game_token import GameToken
 from game_state import GameState
-<<<<<<< HEAD
-
-=======
-from ansi import Ansi
-from drop_state import DropState
-#git pull orgin main
->>>>>>> 80eeb8e1f5718ad0a44990718472a1024fb85858
 
 class PlayerCoordinator:
     def __init__(self):
@@ -30,12 +23,8 @@ class PlayerCoordinator:
 
             # 1. Spiel-Zustand abfragen -> get_state() -> GameLogic -> Return GameState
             state = self._game_logic.get_state()
-<<<<<<< HEAD
 
 
-=======
-            Ansi.gotoXY(1, 2)
->>>>>>> 80eeb8e1f5718ad0a44990718472a1024fb85858
             # 2. Spielfeld abfragen -> get_board() -> GameLogic -> Return Board as list
             board = self._game_logic.get_board()
 
