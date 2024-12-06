@@ -13,12 +13,15 @@ class GameLogic(GameLogicBase):
 
         # Initialisiere Zustand zu Spielbeginn. Standardmässig beginnt Rot
         self._game_state = GameState.TURN_RED
-    
+        self._winning_positions = None
 
     def get_board(self) -> list:
 
         return self._board #Board as list
     
+    def get_winning_positions(self):
+        # Gibt die Gewinn-Koordinaten zurück, falls vorhanden, sonst None
+        return self._winning_positions
     
     def get_state(self) -> GameState:
         
@@ -31,24 +34,28 @@ class GameLogic(GameLogicBase):
             for row in range(6):
                 for col in range(4):  # Maximaler Startpunkt für 4er-Sequenz
                     if all(self._board[row][col + i] == player for i in range(4)):
+                        self._winning_positions = [(row, col+i) for i in range(4)]
                         return True
 
             # Vertikale Prüfung
             for col in range(7):
                 for row in range(3):  # Maximaler Startpunkt für 4er-Sequenz
                     if all(self._board[row + i][col] == player for i in range(4)):
+                        self._winning_positions = [(row+i, col) for i in range(4)]
                         return True
 
             # Diagonale Prüfung (links unten nach rechts oben)
             for row in range(3):
                 for col in range(4):
                     if all(self._board[row + i][col + i] == player for i in range(4)):
+                        self._winning_positions = [(row+i, col+i) for i in range(4)]
                         return True
 
             # Diagonale Prüfung (rechts unten nach links oben)
             for row in range(3):
                 for col in range(3, 7):
                     if all(self._board[row + i][col - i] == player for i in range(4)):
+                        self._winning_positions = [(row+i, col - i) for i in range(4)]
                         return True
 
             return False
@@ -85,7 +92,7 @@ class GameLogic(GameLogicBase):
                     self._game_state = GameState.TURN_RED
                 return DropState.DROP_OK
             
-        # Wenn die Spalte voll ist melden. Zug wird in der Schleife wiederholt     
+        # Wenn die Spalte voll ist melden. Zug wird in der Schleife wiederholt
         return DropState.COLUMN_FULL
     
 

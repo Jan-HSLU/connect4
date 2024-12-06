@@ -21,12 +21,19 @@ class DisplayConsole(DisplayBase):
     https://de.wikipedia.org/wiki/Unicodeblock_Rahmenzeichnung
     """
     def __init__(self):
+        """
+        Initialisiert das DisplayConsole-Objekt mit einer
+        vorgegebenen Anzahl von Zeilen und Spalten und erzeugt ein leeres Spielfeld.
+        """
         #super().__init__(player)
         self.rows = 6
         self.columns = 7
         self.grid = [[' ' for _ in range(self.columns)] for _ in range(self.rows)]
 
     def draw_grid(self):
+        """
+        Zeichnet das aktuelle Spielfeldgitter mit Unicode-Rahmen und den darauf platzierten Spielsteinen.
+        """
         #print("\u250c"+" 0 " + "\u252c" + " 1 " + "\u252c" + " 2 " + "\u252c" + " 3 " + "\u252c" + " 4 " + "\u252c" + " 5 " + "\u252c" + " 6 " + "\u2510")
         print("\u250c" + ("\u252c".join(["\u2500" * 3 for _ in range(self.columns)])) + "\u2510")
         for row in range(self.rows):
@@ -38,10 +45,14 @@ class DisplayConsole(DisplayBase):
         print("\u2514"+" 0 " + "\u2534" + " 1 " + "\u2534" + " 2 " + "\u2534" + " 3 " + "\u2534" + " 4 " + "\u2534" + " 5 " + "\u2534" + " 6 " + "\u2518")
 
     def draw_token(self, x: int, y: int, token) -> None:
+        """
+        Platziert einen Spielstein an der angegebenen Position (x, y) im Spielfeldgitter.
+        """
         
         if 0 <= y < self.rows and 0 <= x < self.columns:
             self.grid[y][x] = token.value
-        Ansi.clear_screen()
+        #Ansi.clear_screen()
+
 
 
 if __name__ == '__main__':

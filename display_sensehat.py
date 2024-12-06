@@ -14,23 +14,37 @@ TOKEN_COLORS = {
 
 class DisplaySenseHat(DisplayBase):
     def __init__(self):
+        """
+        Initialisiert ein DisplaySenseHat-Objekt, stellt die Verbindung zum SenseHat her 
+        und erzeugt ein leeres Spielfeld (board) mit vordefinierten Reihen (rows) und Spalten (columns).
+        """
         self.sense = SenseHat()
         self.rows = 6
         self.columns = 7
         self.board = [[GameToken.EMPTY for _ in range(self.columns)] for _ in range(self.rows)]
         self.cursor_x = None  # Aktuelle Cursorposition
 
-    def draw_grid(self, state):
+    def clear_board(self):
+        """
+        Löscht das Spielfeld, indem es alle Zellen auf EMPTY setzt, setzt den Cursor zurück 
+        und zeichnet das Feld neu, um den leeren Zustand anzuzeigen.
+        """
+        # Setze alle Zellen auf EMPTY und zeichne anschließend neu
+        self.board = [[GameToken.EMPTY for _ in range(self.columns)] for _ in range(self.rows)]
+        self.cursor_x = None
+        self.draw_grid()
+
+    def draw_grid(self):
+        """
+        Zeichnet das aktuelle Spielfeld auf dem SenseHat-Display neu, 
+        einschließlich der Spielsteine und des Cursors (falls vorhanden).
+        """
         pixels = []
         for y in range(8):
             for x in range(8):
                 if y == 0 and x == self.cursor_x:
-                    if state == GameState.TURN_RED:
-                        pixels.append(TOKEN_COLORS["CURSOR_RED"])
-                    elif state == GameState.TURN_YELLOW:
-                        pixels.append(TOKEN_COLORS["CURSOR_YELLOW"])
-                    else:
-                        pixels.append(TOKEN_COLORS["CURSOR"])
+                    # Cursor in der obersten Zeile anzeigen
+                    pixels.append(TOKEN_COLORS["CURSOR"])
                 elif 1 <= y <= self.rows and x < self.columns:
                     token = self.board[y - 1][x]
                     pixels.append(TOKEN_COLORS[token])
@@ -39,14 +53,29 @@ class DisplaySenseHat(DisplayBase):
         self.sense.set_pixels(pixels)
 
     def draw_cursor(self, x):
+        """
+        Setzt die aktuelle Cursorposition (cursor_x) auf den angegebenen Wert x, 
+        ohne das gesamte Spielfeld neu zu zeichnen.
+        
+        :param x: Die neue x-Position des Cursors.
+        """
         self.cursor_x = x
 
     def draw_token(self, x, y, token):
+        """
+        Platziert einen Spielstein (token) an der angegebenen Position (x, y) im Spielfeld, 
+        sofern die Position gültig ist. Spielstein wird als Token-Wert in das board geschrieben.
+        
+        :param x: Spaltenindex der Position.
+        :param y: Zeilenindex der Position.
+        :param token: Der zu platzierende Spielstein (GameToken).
+        """
         if 0 <= y < self.rows and 0 <= x < self.columns:
             if isinstance(token, GameToken):
                 self.board[y][x] = token.value
             else:
                 pass
+
 
 if __name__ == '__main__':
     display = DisplaySenseHat()

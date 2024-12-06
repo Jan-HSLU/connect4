@@ -11,11 +11,26 @@ from time import sleep
 
 class PlayerConsole(PlayerBase):
     def __init__(self, player: GameToken):  # Red or Yellow player
+        """
+        Initialisiert den Konsolenspieler mit einem zugehörigen Spielstein (Red oder Yellow).
+        Stellt Display- und Eingabeobjekte bereit.
+        
+        :param player: Der Spielstein (GameToken), der diesem Spieler zugeordnet ist.
+        """
         #super().__init__(player)
         self._display = DisplayConsole()
         self._input = InputConsole()
 
     def play_turn(self, state: GameState) -> int:
+        """
+        Führt den Spielzug des Spielers in der Konsole aus.
+        
+        Zeigt den aktuellen Fokus auf der Spaltenauswahl an und ermöglicht die Navigation mit den Pfeiltasten.
+        Bestätigen (ENTER) gibt die gewählte Spalte zurück. ESC bricht den Zug ab (Rückgabe -1).
+        
+        :param state: Der aktuelle Spielzustand.
+        :return: Die ausgewählte Spaltennummer, oder -1 bei Abbruch.
+        """
         columns = 7
         current_column = 3
 
@@ -47,7 +62,7 @@ class PlayerConsole(PlayerBase):
             elif key == Keys.ENTER:
                 return current_column
             elif key == Keys.ESC:
-                Ansi.clear_screen()
+                #Ansi.clear_screen()
                 return -1
 
             Ansi.gotoXY(2, 1)
@@ -60,7 +75,15 @@ class PlayerConsole(PlayerBase):
             sleep(20 / 1000)
 
     def draw_board(self, board: list, state: GameState) -> None:
+        """
+        Zeichnet das übergebene Spielfeld in der Konsole, 
+        einschließlich aller vorhandenen Spielsteine und leert zunächst den Bildschirm.
+        
+        :param board: Eine 2D-Liste mit dem aktuellen Zustand des Spielfelds.
+        :param state: Der aktuelle Spielzustand.
+        """
         # TODO: draw grid with tokens
+        Ansi.clear_screen()
         for y in range(len(board)):
             for x in range(len(board[y])):
                 if board[y][x] == GameToken.RED:
@@ -69,8 +92,8 @@ class PlayerConsole(PlayerBase):
                     self._display.draw_token(x, y, GameToken.YELLOW)
                 else:
                     self._display.draw_token(x, y, GameToken.EMPTY)
+        
         self._display.draw_grid()
-
 
 if __name__ == '__main__':
 

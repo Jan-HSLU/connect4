@@ -5,43 +5,57 @@ from game_state import GameState
 from game_token import GameToken
 from input_base import Keys
 from time import sleep
-from sense_hat import SenseHat
 
 class PlayerSenseHat(PlayerBase):
     def __init__(self, player: GameToken):
+        """
+        Initialisiert einen PlayerSenseHat-Spieler mit dem übergebenen Spielstein.
+        Richtet die Anzeige (DisplaySenseHat) und die Eingabe (InputSenseHat) ein.
+        
+        :param player: Der Spielstein (GameToken) dieses Spielers.
+        """
         super().__init__(player)
         self._display = DisplaySenseHat()
         self._input = InputSenseHat()
         self._current_column = 3
 
-        # Initialen Cursor zeichnen
-        self._display.draw_cursor(self._current_column)
-        self._display.draw_grid()
+        # Beim Start das Board komplett leeren
+        self._display.clear_board()
 
     def play_turn(self, state: GameState) -> int:
+        """
+        Führt einen Spielzug auf dem SenseHat-Display durch, indem die aktuelle Spalte 
+        mittels Joystick links/rechts ausgewählt und mit ENTER bestätigt wird.
+        Wenn bestätigt, wird die aktuelle Spalte zurückgegeben.
+        
+        :param state: Der aktuelle Spielzustand.
+        :return: Die aktuell ausgewählte Spalte als int.
+        """
         while True:
             while not self._input.key_pressed():
                 sleep(0.1)
             key = self._input.read_key()
-
-            # Cursor entfernen
-            self._display.draw_cursor(None)
 
             if key == Keys.LEFT:
                 self._current_column = (self._current_column - 1) % self._display.columns
             elif key == Keys.RIGHT:
                 self._current_column = (self._current_column + 1) % self._display.columns
             elif key == Keys.ENTER:
+                # Zug zurückgeben und zuvor Cursor ausblenden
+                self._display.draw_cursor(None)
+                self._display.draw_grid()
                 return self._current_column
 
-            #ACHTNG DAS MUSS DA WAHRSCHEINLICH DANN WEG?!    
-            # Aktualisierten Cursor zeichnen
-            self._display.draw_cursor(self._current_column)
-            self._display.draw_grid(state)
+            self.draw_board(self._display.board, state)
 
     def draw_board(self, board: list, state: GameState):
         """
-        Aktualisiert das gesamte Spielfeld basierend auf der übergebenen Datenstruktur.
+        Zeichnet das übergebene Spielfeld (board) auf dem SenseHat-Display.
+        Platziert die vorhandenen Spielsteine und zeigt den Cursor nur an, 
+        wenn dieser Spieler am Zug ist.
+        
+        :param board: Eine 2D-Liste, die den aktuellen Zustand des Spielfeldes darstellt.
+        :param state: Der aktuelle Spielzustand.
         """
         for y in range(len(board)):
             for x in range(len(board[y])):
@@ -51,6 +65,14 @@ class PlayerSenseHat(PlayerBase):
                     self._display.draw_token(x, y, GameToken.YELLOW)
                 else:
                     self._display.draw_token(x, y, GameToken.EMPTY)
+
+        # Cursor nur anzeigen, wenn dieser Spieler am Zug ist
+        if (self._player == GameToken.YELLOW and state == GameState.TURN_YELLOW) or \
+           (self._player == GameToken.RED and state == GameState.TURN_RED):
+            self._display.draw_cursor(self._current_column)
+        else:
+            self._display.draw_cursor(None)
+
         self._display.draw_grid()
 
 if __name__ == '__main__':
