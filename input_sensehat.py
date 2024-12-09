@@ -2,7 +2,10 @@ from input_base import InputBase
 from input_base import Keys
 from enum import Enum
 from time import sleep
-from sense_hat import SenseHat
+try:
+    from sense_hat import SenseHat
+except ImportError:
+    from sense_emu import SenseHat
 
 class InputSenseHat(InputBase):
     """

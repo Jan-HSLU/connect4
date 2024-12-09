@@ -1,6 +1,9 @@
 from game_token import GameToken
 from display_base import DisplayBase
-from sense_hat import SenseHat
+try:
+    from sense_hat import SenseHat
+except ImportError:
+    from sense_emu import SenseHat
 from game_state import GameState
 from time import sleep
 

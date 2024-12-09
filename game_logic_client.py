@@ -9,7 +9,7 @@ class GameLogicClient(GameLogicBase):
     def __init__(self, host):
         super().__init__()
         print( f"GameLogicClient initialized with host {host}" )
-        self._url = f'http://{host}:5000/api'
+        self._url = f'http://{host}:5001/api'
 
     def get_board(self) -> list:
 
@@ -25,7 +25,7 @@ class GameLogicClient(GameLogicBase):
         response = requests.get(f"{self._url}/state")
 
         # Resultat GameState als JSON Number
-        game_state = response.json().get("game_state")
+        game_state = response.json().get("state")
 
         # Umwandlung JSON Number zu GameState-Enum & Return
         if game_state == 0:

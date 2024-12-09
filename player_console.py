@@ -82,8 +82,8 @@ class PlayerConsole(PlayerBase):
         :param board: Eine 2D-Liste mit dem aktuellen Zustand des Spielfelds.
         :param state: Der aktuelle Spielzustand.
         """
-        # TODO: draw grid with tokens
         Ansi.clear_screen()
+        Ansi.gotoXY(1, 2)
         for y in range(len(board)):
             for x in range(len(board[y])):
                 if board[y][x] == GameToken.RED:

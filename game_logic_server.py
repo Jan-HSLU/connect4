@@ -105,7 +105,7 @@ if __name__ == "__main__":
         state = game.get_state()
         
         # gibt GameState als JSON Number dem Caller zurück
-        return jsonify({"game_state": state.value}), 200 # Status Code: 200 Ok
+        return jsonify({"state": state.value}), 200 # Status Code: 200 Ok
 
 
     @app.route('/api/drop', methods=['POST'])
@@ -196,5 +196,5 @@ if __name__ == "__main__":
     
     # Server-Start
     print("Game server start")
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True, port=5000)
     print("Game server exit")
