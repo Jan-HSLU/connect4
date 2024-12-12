@@ -34,7 +34,6 @@ class DisplayConsole(DisplayBase):
         """
         Zeichnet das aktuelle Spielfeldgitter mit Unicode-Rahmen und den darauf platzierten Spielsteinen.
         """
-        #print("\u250c"+" 0 " + "\u252c" + " 1 " + "\u252c" + " 2 " + "\u252c" + " 3 " + "\u252c" + " 4 " + "\u252c" + " 5 " + "\u252c" + " 6 " + "\u2510")
         print("\u250c" + ("\u252c".join(["\u2500" * 3 for _ in range(self.columns)])) + "\u2510")
         for row in range(self.rows):
             print("\u2502" + ("\u2502".join([f" {self.grid[row][col]} " for col in range(self.columns)])) + "\u2502")
@@ -46,12 +45,15 @@ class DisplayConsole(DisplayBase):
 
     def draw_token(self, x: int, y: int, token) -> None:
         """
-        Platziert einen Spielstein an der angegebenen Position (x, y) im Spielfeldgitter.
+        Platziert einen Spielstein an der angegebenen Position (x, y) im Spielfeldgitter mit Farbanzeige.
         """
-        
         if 0 <= y < self.rows and 0 <= x < self.columns:
-            self.grid[y][x] = token.value
-        #Ansi.clear_screen()
+            if token == GameToken.RED:
+                self.grid[y][x] = f"\033[31m●\033[0m"  # Roter Spielstein
+            elif token == GameToken.YELLOW:
+                self.grid[y][x] = f"\033[33m●\033[0m"  # Gelber Spielstein
+            else:
+                self.grid[y][x] = ' '
 
 
 
@@ -62,9 +64,8 @@ if __name__ == '__main__':
     fc.draw_grid()
     fc.draw_token(0, 0, GameToken.RED)
     fc.draw_token(6, 2, GameToken.YELLOW)
+    fc.draw_grid()
     Ansi.gotoXY(1, 20)
-    print(type(GameToken.RED))
-    print(GameToken.RED)
 
 
 

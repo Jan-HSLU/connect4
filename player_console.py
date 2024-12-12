@@ -23,56 +23,40 @@ class PlayerConsole(PlayerBase):
 
     def play_turn(self, state: GameState) -> int:
         """
-        Führt den Spielzug des Spielers in der Konsole aus.
-        
-        Zeigt den aktuellen Fokus auf der Spaltenauswahl an und ermöglicht die Navigation mit den Pfeiltasten.
-        Bestätigen (ENTER) gibt die gewählte Spalte zurück. ESC bricht den Zug ab (Rückgabe -1).
-        
-        :param state: Der aktuelle Spielzustand.
-        :return: Die ausgewählte Spaltennummer, oder -1 bei Abbruch.
+        Führt den Spielzug des Spielers in der Konsole aus und zeigt den aktuellen Fokus
+        als farbigen Spielstein oberhalb des Spielfelds an.
         """
         columns = 7
         current_column = 3
-
-        Ansi.gotoXY(2, 1)
-        for i in range(columns):
-            if i == current_column:
-                print(f"[{i}]", end=" ")
-            else:
-                print(f" {i} ", end=" ")
-        print()
+        player_token = GameToken.RED if state == GameState.TURN_RED else GameToken.YELLOW
 
         while True:
-            key = self._input.read_key()
-            
-            Ansi.gotoXY(2, 1)
-            for i in range(columns):
-                if i == current_column:
-                    print(f" {i} ", end=" ")
+            Ansi.gotoXY(1, 1)
+            for col in range(columns):
+                if col == current_column:
+                    if player_token == GameToken.RED:
+                        token = f"\033[31m●\033[0m"  # Roter Token
+                    elif player_token == GameToken.YELLOW:
+                        token = f"\033[33m●\033[0m"  # Gelber Token
+                    else:
+                        token = " "
                 else:
-                    print(f" {i} ", end=" ")
+                    token = " "
+
+                # Abstand: 2 Leerzeichen vor und 1 nach dem Token
+                print(f"  {token} ", end="")
             print()
 
-            if key == Keys.LEFT:
-                if current_column > 0:
-                    current_column -= 1
-            elif key == Keys.RIGHT:
-                if current_column < columns - 1:
-                    current_column += 1
+            key = self._input.read_key()
+
+            if key == Keys.LEFT and current_column > 0:
+                current_column -= 1
+            elif key == Keys.RIGHT and current_column < columns - 1:
+                current_column += 1
             elif key == Keys.ENTER:
                 return current_column
             elif key == Keys.ESC:
-                #Ansi.clear_screen()
                 return -1
-
-            Ansi.gotoXY(2, 1)
-            for i in range(columns):
-                if i == current_column:
-                    print(f"[{i}]", end=" ")
-                else:
-                    print(f" {i} ", end=" ")
-            print()
-            sleep(20 / 1000)
 
     def draw_board(self, board: list, state: GameState) -> None:
         """

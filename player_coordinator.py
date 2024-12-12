@@ -34,7 +34,7 @@ class PlayerCoordinator:
             print("Ungültiger Spielmodus. Abbruch.")
 
     def _set_up(self):
-        def print_animiert(message, delay=0.05, end_delay=0.5):
+        def print_animiert(message, delay=0, end_delay=0):
             for char in message:
                 sys.stdout.write(char)
                 sys.stdout.flush()
@@ -137,7 +137,9 @@ class PlayerCoordinator:
                 # 5. Den Zug an die Logik weiterreichen
                 result = self._game_logic.drop_token(GameToken.RED, column_to_drop)
                 if result == DropState.COLUMN_FULL:
+                    Ansi.gotoXY(1,16)
                     print("Die Spalte ist voll, wähle eine Andere.")
+                    time.sleep(1.0)
 
 
             # Wenn Spieler Gelb am Zug:
@@ -149,7 +151,9 @@ class PlayerCoordinator:
                 # 5. Den Zug an die Logik weiterreichen
                 result = self._game_logic.drop_token(GameToken.YELLOW, column_to_drop)
                 if result == DropState.COLUMN_FULL:
+                    Ansi.gotoXY(1,16)
                     print("Die Spalte ist voll, wähle eine Andere.")
+                    time.sleep(1.0)
 
 
             # Schleifenabbruch bei Spielende (nicht sicher ob hier richtig)
