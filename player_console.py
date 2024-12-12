@@ -17,7 +17,7 @@ class PlayerConsole(PlayerBase):
         
         :param player: Der Spielstein (GameToken), der diesem Spieler zugeordnet ist.
         """
-        #super().__init__(player)
+        super().__init__(player)
         self._display = DisplayConsole()
         self._input = InputConsole()
 

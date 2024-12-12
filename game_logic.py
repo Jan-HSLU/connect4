@@ -3,63 +3,82 @@ from game_token import GameToken
 from game_state import GameState
 from game_logic_base import GameLogicBase
 
-
 class GameLogic(GameLogicBase):
+    """
+    Implementierung der Spiel-Logik für ein Connect Four-ähnliches Spiel.
+    """
 
-    def __init__(self):
-
+    def __init__(self) -> None:
+        """
+        Initialisiert das Spielfeld, den Spielstatus und die Gewinn-Koordinaten.
+        """
         # Initialisiere Board
-        self._board = [[GameToken.EMPTY for _ in range(7)] for _ in range(6)]
+        self._board: list = [[GameToken.EMPTY for _ in range(7)] for _ in range(6)]
 
         # Initialisiere Zustand zu Spielbeginn. Standardmässig beginnt Rot
-        self._game_state = GameState.TURN_RED
-        self._winning_positions = None
+        self._game_state: GameState = GameState.TURN_RED
+        self._winning_positions: list = None
 
     def get_board(self) -> list:
+        """
+        Gibt das aktuelle Spielfeld zurück.
 
-        return self._board #Board as list
-    
-    def get_winning_positions(self):
-        # Gibt die Gewinn-Koordinaten zurück, falls vorhanden, sonst None
+        :return: Das Spielfeld als Liste von Listen (2D-Array)
+        """
+        return self._board
+
+    def get_winning_positions(self) -> list:
+        """
+        Gibt die Gewinn-Koordinaten zurück, falls vorhanden, sonst None.
+
+        :return: Eine Liste der Gewinn-Koordinaten oder None
+        """
         return self._winning_positions
-    
-    def get_state(self) -> GameState:
-        
-        # Prüft, ob ein Spieler gewonnen hat oder das Spiel unentschieden ist.
-        # Gibt den aktuellen Spielzustand zurück.
-        
-        def check_win(player: GameToken) -> bool:
 
+    def get_state(self) -> GameState:
+        """
+        Prüft, ob ein Spieler gewonnen hat oder das Spiel unentschieden ist,
+        und gibt den aktuellen Spielstatus zurück.
+
+        :return: Der aktuelle Spielstatus als Instanz der GameState-Enum
+        """
+
+        def check_win(player: GameToken) -> bool:
+            """
+            Prüft, ob der angegebene Spieler gewonnen hat.
+
+            :param player: Der Spieler (GameToken.RED oder GameToken.YELLOW)
+            :return: True, wenn der Spieler gewonnen hat, sonst False
+            """
             # Horizontale Prüfung
             for row in range(6):
-                for col in range(4):  # Maximaler Startpunkt für 4er-Sequenz
+                for col in range(4):
                     if all(self._board[row][col + i] == player for i in range(4)):
-                        self._winning_positions = [(row, col+i) for i in range(4)]
+                        self._winning_positions = [(row, col + i) for i in range(4)]
                         return True
 
             # Vertikale Prüfung
             for col in range(7):
-                for row in range(3):  # Maximaler Startpunkt für 4er-Sequenz
+                for row in range(3):
                     if all(self._board[row + i][col] == player for i in range(4)):
-                        self._winning_positions = [(row+i, col) for i in range(4)]
+                        self._winning_positions = [(row + i, col) for i in range(4)]
                         return True
 
             # Diagonale Prüfung (links unten nach rechts oben)
             for row in range(3):
                 for col in range(4):
                     if all(self._board[row + i][col + i] == player for i in range(4)):
-                        self._winning_positions = [(row+i, col+i) for i in range(4)]
+                        self._winning_positions = [(row + i, col + i) for i in range(4)]
                         return True
 
             # Diagonale Prüfung (rechts unten nach links oben)
             for row in range(3):
                 for col in range(3, 7):
                     if all(self._board[row + i][col - i] == player for i in range(4)):
-                        self._winning_positions = [(row+i, col - i) for i in range(4)]
+                        self._winning_positions = [(row + i, col - i) for i in range(4)]
                         return True
 
             return False
-
 
         # Prüfen, ob ein Spieler gewonnen hat
         if check_win(GameToken.RED):
@@ -73,15 +92,20 @@ class GameLogic(GameLogicBase):
 
         # Andernfalls: Spiel läuft weiter, wer ist dran?
         return self._game_state
-    
 
     def drop_token(self, player: GameToken, column: int) -> DropState:
+        """
+        Führt die Aktion des Spielers aus, einen Spielstein in eine Spalte zu werfen.
 
-        # Prüfen, ob die Spalte möglich ist
+        :param player: Der Spieler (GameToken.RED oder GameToken.YELLOW)
+        :param column: Die Spalte, in die der Spielstein geworfen werden soll
+        :return: Der Status der Aktion als Instanz der DropState-Enum
+        """
+        # Prüfen, ob die Spalte gültig ist
         if not (0 <= column < 7):
             return DropState.COLUMN_INVALID
- 
-        # Stein setzen, wenn die Spalte noch leer ist. Spieler wechseln
+
+        # Stein setzen, wenn die Spalte noch Platz hat
         for row in reversed(range(6)):
             if self._board[row][column] == GameToken.EMPTY:
                 if player == GameToken.RED:
@@ -91,24 +115,6 @@ class GameLogic(GameLogicBase):
                     self._board[row][column] = GameToken.YELLOW
                     self._game_state = GameState.TURN_RED
                 return DropState.DROP_OK
-            
-        # Wenn die Spalte voll ist melden. Zug wird in der Schleife wiederholt
+
+        # Wenn die Spalte voll ist
         return DropState.COLUMN_FULL
-    
-
-
-"""
-    def drop_token(self, player: GameToken, column: int):
-        if column < 0 or column >= len(self._board[0]):
-            return DropState.COLUMN_INVALID, -1
-
-        # Prüfen, ob die Spalte voll ist
-        if self._board[0][column] != GameToken.EMPTY:
-            return DropState.COLUMN_FULL, -1
-
-        # Finde die niedrigste leere Zeile in der Spalte
-        for row in reversed(range(len(self._board))):
-            if self._board[row][column] == GameToken.EMPTY:
-                self._board[row][column] = player
-                return DropState.DROP_OK, row  # Zeile zurückgeben
-        return DropState.COLUMN_FULL, -1"""

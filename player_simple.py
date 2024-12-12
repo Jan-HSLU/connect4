@@ -3,11 +3,24 @@ from game_state import GameState
 from player_base import PlayerBase
 
 class PlayerSimple(PlayerBase):
-    def __init__(self, player: GameToken):  # Red or Yellow player
-        self._player = player
+    """
+    Einfache Spielerimplementierung, die die Interaktion mit dem Benutzer über die Konsole ermöglicht.
+    """
+
+    def __init__(self, player: GameToken) -> None:
+        """
+        Initialisiert einen Spieler mit dem angegebenen Spielstein.
+
+        :param player: Der Spielstein des Spielers (GameToken.RED oder GameToken.YELLOW)
+        """
+        self._player: GameToken = player
 
     def play_turn(self) -> int:
+        """
+        Fordert den Spieler auf, eine Spalte für den Zug auszuwählen.
 
+        :return: Die ausgewählte Spalte als ganze Zahl.
+        """
         while True:
             try:
                 column_to_drop = int(input(f"Spieler {self._player}: Wo möchtest du spielen? "))
@@ -15,13 +28,17 @@ class PlayerSimple(PlayerBase):
             except ValueError:
                 print("Ungültige Eingabe. Bitte eine ganze Zahl eingeben.")
 
-        
     def draw_board(self, board: list, state: GameState) -> None:
-        
+        """
+        Zeichnet das Spielfeld und zeigt den aktuellen Spielstatus an.
+
+        :param board: Das Spielfeld als Liste von Listen (2D-Array).
+        :param state: Der aktuelle Spielstatus als Instanz der GameState-Enum.
+        """
         print("-" * 29)
         for row in board:
-           print("|" + "|".join(f" {cell} " for cell in row) + "|")
-           print("-" * 29)
+            print("|" + "|".join(f" {cell} " for cell in row) + "|")
+            print("-" * 29)
 
         # Spielstatus anzeigen
         if state == GameState.WON_RED:
@@ -35,10 +52,7 @@ class PlayerSimple(PlayerBase):
         elif state == GameState.TURN_YELLOW:
             print("Yellow's turn!")
 
-        return #Zeichne das Board in der Konsole
-    
-
-    
+        return  # Zeichne das Board in der Konsole
 
 if __name__ == '__main__':
     Player = PlayerSimple(GameToken.YELLOW)

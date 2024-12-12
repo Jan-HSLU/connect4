@@ -6,28 +6,34 @@ import requests
 
 class GameLogicClient(GameLogicBase):
 
-    def __init__(self, host):
+    def __init__(self, host: str) -> None:
+        """
+        Initialisiert den GameLogicClient mit der angegebenen Host-Adresse.
+
+        :param host: Die Host-Adresse des Servers
+        """
         super().__init__()
-        print( f"GameLogicClient initialized with host {host}" )
-        self._url = f'http://{host}:5001/api'
+        print(f"GameLogicClient initialized with host {host}")
+        self._url = f'http://{host}:5000/api'
 
     def get_board(self) -> list:
+        """
+        Ruft das aktuelle Spielfeld vom Server ab.
 
-        # API Call GET /Board
+        :return: Das Spielfeld als Liste von Listen (Reihen und Spalten)
+        """
         response = requests.get(f"{self._url}/board")
-
-        # Resultat Board als List -> Return
         return response.json().get("board")
 
     def get_state(self) -> GameState:
-        
-        # API Call GET /State
-        response = requests.get(f"{self._url}/state")
+        """
+        Ruft den aktuellen Spielstatus vom Server ab.
 
-        # Resultat GameState als JSON Number
+        :return: Der aktuelle Spielstatus als GameState-Enum
+        """
+        response = requests.get(f"{self._url}/state")
         game_state = response.json().get("state")
 
-        # Umwandlung JSON Number zu GameState-Enum & Return
         if game_state == 0:
             return GameState.TURN_RED
         elif game_state == 1:
@@ -41,28 +47,27 @@ class GameLogicClient(GameLogicBase):
         else:
             print("ERROR GAMESTATE API")
 
+    def drop_token(self, player: GameToken, column: int) -> DropState:
+        """
+        Lässt einen Spielstein in die angegebene Spalte fallen.
 
-    def drop_token(self, player, column) -> DropState:
-        
-        # Umwandlung GameToken-Enum zu JSON String
+        :param player: Der Spieler (GameToken.RED oder GameToken.YELLOW)
+        :param column: Die Spalte, in die der Spielstein fallen soll
+        :return: Der Status des Drops als DropState-Enum
+        """
         if player == GameToken.RED:
             player_id = "X"
         else:
             player_id = "O"
 
-        # Payload für API Call
         payload = {
             "column": column,
-             "player_id": player_id
+            "player_id": player_id
         }
 
-        # API Call POST /Drop
         response = requests.post(f"{self._url}/drop", json=payload)
-
-        # Resultat DropState als JSON Number
         drop_state = response.json().get("drop_state")
 
-        # Umwandlung JSON Number zu DropState-Enum & Return
         if drop_state == 0:
             return DropState.DROP_OK
         elif drop_state == 1:

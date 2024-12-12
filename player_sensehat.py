@@ -48,7 +48,7 @@ class PlayerSenseHat(PlayerBase):
 
             self.draw_board(self._display.board, state)
 
-    def draw_board(self, board: list, state: GameState):
+    def draw_board(self, board: list, state: GameState) -> None:
         """
         Zeichnet das übergebene Spielfeld (board) auf dem SenseHat-Display.
         Platziert die vorhandenen Spielsteine und zeigt den Cursor nur an, 

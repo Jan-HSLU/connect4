@@ -21,13 +21,14 @@ class DisplaySenseHat(DisplayBase):
         Initialisiert ein DisplaySenseHat-Objekt, stellt die Verbindung zum SenseHat her 
         und erzeugt ein leeres Spielfeld (board) mit vordefinierten Reihen (rows) und Spalten (columns).
         """
+        super().__init__()
         self.sense = SenseHat()
         self.rows = 6
         self.columns = 7
         self.board = [[GameToken.EMPTY for _ in range(self.columns)] for _ in range(self.rows)]
         self.cursor_x = None  # Aktuelle Cursorposition
 
-    def clear_board(self):
+    def clear_board(self) -> None:
         """
         Löscht das Spielfeld, indem es alle Zellen auf EMPTY setzt, setzt den Cursor zurück 
         und zeichnet das Feld neu, um den leeren Zustand anzuzeigen.
@@ -37,7 +38,7 @@ class DisplaySenseHat(DisplayBase):
         self.cursor_x = None
         self.draw_grid()
 
-    def draw_grid(self):
+    def draw_grid(self) -> None:
         """
         Zeichnet das aktuelle Spielfeld auf dem SenseHat-Display neu, 
         einschließlich der Spielsteine und des Cursors (falls vorhanden).
@@ -55,7 +56,7 @@ class DisplaySenseHat(DisplayBase):
                     pixels.append(TOKEN_COLORS["OFF"])
         self.sense.set_pixels(pixels)
 
-    def draw_cursor(self, x):
+    def draw_cursor(self, x: int) -> None:
         """
         Setzt die aktuelle Cursorposition (cursor_x) auf den angegebenen Wert x, 
         ohne das gesamte Spielfeld neu zu zeichnen.
@@ -64,7 +65,7 @@ class DisplaySenseHat(DisplayBase):
         """
         self.cursor_x = x
 
-    def draw_token(self, x, y, token):
+    def draw_token(self, x: int, y: int, token: GameToken) -> None:
         """
         Platziert einen Spielstein (token) an der angegebenen Position (x, y) im Spielfeld, 
         sofern die Position gültig ist. Spielstein wird als Token-Wert in das board geschrieben.

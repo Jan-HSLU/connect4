@@ -17,6 +17,8 @@ class InputConsole(InputBase):
     """
     Input handler for console applications using keyboard input.
     """
+    def __init__(self):
+        super().__init__()
 
     def key_pressed(self) -> bool:
         """
