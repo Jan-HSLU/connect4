@@ -1,0 +1,6 @@
+Juri Jerg
+Jan Kaufmann
+
+https://github.com/Jan-HSLU/connect4
+
+https://github.com/Jan-HSLU/connect4.git
