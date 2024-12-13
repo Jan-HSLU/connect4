@@ -17,7 +17,6 @@ class GameLogic(GameLogicBase):
 
         # Initialisiere Zustand zu Spielbeginn. Standardmässig beginnt Rot
         self._game_state: GameState = GameState.TURN_RED
-        self._winning_positions: list = None
 
     def get_board(self) -> list:
         """
@@ -26,14 +25,6 @@ class GameLogic(GameLogicBase):
         :return: Das Spielfeld als Liste von Listen (2D-Array)
         """
         return self._board
-
-    def get_winning_positions(self) -> list:
-        """
-        Gibt die Gewinn-Koordinaten zurück, falls vorhanden, sonst None.
-
-        :return: Eine Liste der Gewinn-Koordinaten oder None
-        """
-        return self._winning_positions
 
     def get_state(self) -> GameState:
         """
@@ -54,28 +45,24 @@ class GameLogic(GameLogicBase):
             for row in range(6):
                 for col in range(4):
                     if all(self._board[row][col + i] == player for i in range(4)):
-                        self._winning_positions = [(row, col + i) for i in range(4)]
                         return True
 
             # Vertikale Prüfung
             for col in range(7):
                 for row in range(3):
                     if all(self._board[row + i][col] == player for i in range(4)):
-                        self._winning_positions = [(row + i, col) for i in range(4)]
                         return True
 
             # Diagonale Prüfung (links unten nach rechts oben)
             for row in range(3):
                 for col in range(4):
                     if all(self._board[row + i][col + i] == player for i in range(4)):
-                        self._winning_positions = [(row + i, col + i) for i in range(4)]
                         return True
 
             # Diagonale Prüfung (rechts unten nach links oben)
             for row in range(3):
                 for col in range(3, 7):
                     if all(self._board[row + i][col - i] == player for i in range(4)):
-                        self._winning_positions = [(row + i, col - i) for i in range(4)]
                         return True
 
             return False
